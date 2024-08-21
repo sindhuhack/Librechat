@@ -2303,6 +2303,72 @@ button.scroll-convo {
   animation: moveUp 4s ease-in-out infinite;
 }
 
+@keyframes wave {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.wave1 {
+  animation: wave 1s infinite;
+}
+
+.wave2 {
+  animation: wave 1s infinite 0.2s;
+}
+
+.wave3 {
+  animation: wave 1s infinite 0.4s;
+}
+
+.smooth-transition {
+  transition: transform 0.3s ease-in-out;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.pulse {
+  animation: pulse 3s infinite;
+}
+
+/* styles.css */
+@keyframes wave {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.wave1 {
+  animation: wave 1.5s infinite;
+}
+
+.wave2 {
+  animation: wave 1.5s infinite 0.2s;
+}
+
+.wave3 {
+  animation: wave 1.5s infinite 0.4s;
+}
+
+.smooth-transition {
+  transition: transform 0.3s ease-in-out;
+}
 .message-content {
   font-size: var(--markdown-font-size, var(--font-size-base));
   line-height: 1.75;
@@ -2340,4 +2406,3 @@ button.scroll-convo {
   font-size: inherit;
   line-height: inherit;
 }
-

@@ -3,6 +3,7 @@ import { useRecoilState } from 'recoil';
 import { useSpeechToTextMutation } from '~/data-provider';
 import { useToastContext } from '~/Providers';
 import store from '~/store';
+import * as annyang from 'annyang';
 import useGetAudioSettings from './useGetAudioSettings';
 
 const useSpeechToTextExternal = (onTranscriptionComplete: (text: string) => void) => {
@@ -12,8 +13,10 @@ const useSpeechToTextExternal = (onTranscriptionComplete: (text: string) => void
   const [speechToText] = useRecoilState<boolean>(store.speechToText);
   const [autoTranscribeAudio] = useRecoilState<boolean>(store.autoTranscribeAudio);
   const [autoSendText] = useRecoilState(store.autoSendText);
+
   const [text, setText] = useState<string>('');
   const [isListening, setIsListening] = useState(false);
+  const [isStartngStream, setIsStartStream] = useState(false);
   const [permission, setPermission] = useState(false);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const [isRequestBeingMade, setIsRequestBeingMade] = useState(false);
@@ -22,17 +25,18 @@ const useSpeechToTextExternal = (onTranscriptionComplete: (text: string) => void
   const audioStream = useRef<MediaStream | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const animationFrameIdRef = useRef<number | null>(null);
+  const [isAudioDetected, setIsAudioDetected] = useState(false);
 
   const { mutate: processAudio, isLoading: isProcessing } = useSpeechToTextMutation({
     onSuccess: (data) => {
       const extractedText = data.text;
+      setIsStartStream(true);
       setText(extractedText);
       setIsRequestBeingMade(false);
-
-      if (autoSendText > -1 && speechToText && extractedText.length > 0) {
+      if (autoSendText && speechToText && extractedText.length > 0) {
         setTimeout(() => {
           onTranscriptionComplete(extractedText);
-        }, autoSendText * 1000);
+        }, 3000);
       }
     },
     onError: () => {
@@ -121,6 +125,26 @@ const useSpeechToTextExternal = (onTranscriptionComplete: (text: string) => void
   };
 
   const startRecording = async () => {
+    if (annyang) {
+      setIsListening(true);
+      annyang.start({ autoRestart: true, continuous: true });
+
+      annyang.addCallback('soundstart', () => {
+        console.log('Sound detected');
+        setIsAudioDetected(true);
+      });
+
+      annyang.addCallback('soundend', () => {
+        console.log('Sound ended');
+        setIsAudioDetected(false);
+      });
+
+      annyang.addCallback('end', () => {
+        console.log('Annyang ended');
+        setIsListening(false);
+        setIsAudioDetected(false);
+      });
+    }
     if (isRequestBeingMade) {
       showToast({ message: 'A request is already being made. Please wait.', status: 'warning' });
       return;
@@ -139,6 +163,7 @@ const useSpeechToTextExternal = (onTranscriptionComplete: (text: string) => void
         });
         mediaRecorderRef.current.addEventListener('stop', handleStop);
         mediaRecorderRef.current.start(100);
+        setIsAudioDetected(true);
         if (!audioContextRef.current && autoTranscribeAudio && speechToText) {
           monitorSilence(audioStream.current, stopRecording);
         }
@@ -152,6 +177,12 @@ const useSpeechToTextExternal = (onTranscriptionComplete: (text: string) => void
   };
 
   const stopRecording = () => {
+    if (annyang) {
+      annyang.abort();
+      setIsListening(false);
+      setIsAudioDetected(false);
+    }
+
     if (!mediaRecorderRef.current) {
       return;
     }
@@ -161,6 +192,7 @@ const useSpeechToTextExternal = (onTranscriptionComplete: (text: string) => void
 
       audioStream.current?.getTracks().forEach((track) => track.stop());
       audioStream.current = null;
+      setIsAudioDetected(false);
 
       if (animationFrameIdRef.current !== null) {
         window.cancelAnimationFrame(animationFrameIdRef.current);
@@ -231,6 +263,8 @@ const useSpeechToTextExternal = (onTranscriptionComplete: (text: string) => void
     externalStartRecording,
     externalStopRecording,
     clearText,
+    isAudioDetected,
+    isStartngStream,
   };
 };
 

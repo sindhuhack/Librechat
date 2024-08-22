@@ -268,6 +268,7 @@ export default function Settings({ conversation, setOption, models, readonly }: 
               />
             </div>
             <Slider
+              aria-label="Temperature Slider"
               disabled={readonly}
               value={[temperatureValue ?? openAISettings.temperature.default]}
               onValueChange={(value) => setTemperature(value[0])}
@@ -308,6 +309,7 @@ export default function Settings({ conversation, setOption, models, readonly }: 
               />
             </div>
             <Slider
+              aria-label="Top P Slider"
               disabled={readonly}
               value={[topPValue ?? openAISettings.top_p.default]}
               onValueChange={(value) => setTopP(value[0])}
@@ -354,6 +356,7 @@ export default function Settings({ conversation, setOption, models, readonly }: 
               />
             </div>
             <Slider
+              aria-label="Frequency Penalty Slider"
               disabled={readonly}
               value={[freqPValue ?? openAISettings.frequency_penalty.default]}
               onValueChange={(value) => setFreqP(value[0])}
@@ -400,6 +403,7 @@ export default function Settings({ conversation, setOption, models, readonly }: 
               />
             </div>
             <Slider
+              aria-label="Presence Penalty Slider"
               disabled={readonly}
               value={[presPValue ?? openAISettings.presence_penalty.default]}
               onValueChange={(value) => setPresP(value[0])}
@@ -454,7 +458,7 @@ export default function Settings({ conversation, setOption, models, readonly }: 
             <HoverCard openDelay={500}>
               <HoverCardTrigger className="flex w-[52%] md:w-[125px]">
                 <Slider
-                  id="image-detail-slider"
+                  aria-label="Image Detail Slider"
                   disabled={readonly}
                   value={[
                     imageDetailNumeric[imageDetail ?? ''] ??

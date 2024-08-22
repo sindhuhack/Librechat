@@ -8,7 +8,7 @@ const HoverCardSettings = ({ side, text }) => {
 
   return (
     <HoverCard openDelay={500}>
-      <HoverCardTrigger>
+      <HoverCardTrigger className="cursor-help">
         <CircleHelpIcon className="h-5 w-5 text-gray-500" />{' '}
       </HoverCardTrigger>
       <HoverCardPortal>

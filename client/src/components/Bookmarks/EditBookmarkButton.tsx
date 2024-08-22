@@ -15,20 +15,27 @@ const EditBookmarkButton: FC<{
   const localize = useLocalize();
   const [open, setOpen] = useState(false);
 
+  console.log({ open });
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter') {
+      setOpen(!open);
+    }
+  };
+
   return (
     <>
       <BookmarkEditDialog context="EditBookmarkButton" bookmark={bookmark} open={open} setOpen={setOpen} />
-      <TooltipAnchor description={localize('com_ui_edit')}>
-        <button
-          type="button"
-          className="transition-color flex size-7 items-center justify-center rounded-lg duration-200 hover:bg-surface-hover"
-          tabIndex={tabIndex}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          onClick={() => setOpen(!open)}
-        >
-          <EditIcon />
-        </button>
+      <TooltipAnchor
+        description={localize('com_ui_edit')}
+        className="transition-color flex size-7 cursor-pointer items-center justify-center rounded-lg duration-200 hover:bg-surface-hover"
+        tabIndex={tabIndex}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        onClick={() => setOpen(!open)}
+        onKeyDown={handleKeyDown}
+      >
+        <EditIcon />
       </TooltipAnchor>
     </>
   );

@@ -28,7 +28,7 @@
   },
   "homepage": "https://librechat.ai",
   "dependencies": {
-    "@ariakit/react": "^0.4.8",
+    "@ariakit/react": "^0.4.10",
     "@dicebear/collection": "^7.0.4",
     "@dicebear/core": "^7.0.4",
     "@headlessui/react": "^2.1.2",
@@ -62,6 +62,7 @@
     "downloadjs": "^1.4.7",
     "export-from-json": "^1.7.2",
     "filenamify": "^6.0.0",
+    "framer-motion": "^11.3.29",
     "html-to-image": "^1.11.11",
     "image-blob-reduce": "^4.1.0",
     "librechat-data-provider": "*",
